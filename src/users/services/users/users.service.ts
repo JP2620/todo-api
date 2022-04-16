@@ -5,6 +5,7 @@ import { plainToClass, plainToInstance } from 'class-transformer';
 import { User as UserEntity } from 'src/typeorm/User';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { SerializedUser, User } from 'src/users/types';
+import { encodePassword } from 'src/utils/bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -23,7 +24,8 @@ export class UsersService {
 
     async createUser(userDto: CreateUserDto) {
         // TODO: VALIDATE
-        const newUser = this.userRepository.create(userDto);
+        const password = encodePassword(userDto.password)
+        const newUser = this.userRepository.create({...userDto, password});
         return await this.userRepository.save(newUser);
     }
 
