@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Inject, Post, UsePipes, ValidationPipe }
 import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
 import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
 import { DeleteFolderDto } from 'src/todo/dtos/DeleteFolder.dto';
+import { GetTasksDto } from 'src/todo/dtos/GetTasks.dto';
 import { TodoService } from 'src/todo/services/todo/todo.service';
 
 @Controller('todo')
@@ -28,6 +29,13 @@ export class TodoController {
         console.log(createTaskDto)
         return await this.todoService.createTask(createTaskDto);
     }
+
+    @Get('task')
+    @UsePipes(ValidationPipe)
+    async getTasks(@Body() getTasksDto: GetTasksDto) {
+        console.log(getTasksDto);
+        return await this.todoService.getTasks(getTasksDto);
+    } 
 
 
 

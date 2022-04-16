@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
 import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
 import { DeleteFolderDto } from 'src/todo/dtos/DeleteFolder.dto';
+import { GetTasksDto } from 'src/todo/dtos/GetTasks.dto';
 import { ToDoFolder } from 'src/typeorm/Folder';
 import { Task } from 'src/typeorm/Task';
 import { User } from 'src/typeorm/User';
@@ -54,5 +55,13 @@ export class TodoService {
         });
         return this.taskRepository.save(newTask);
         
+    }
+
+    async getTasks(getTasksDto: GetTasksDto) {
+        const folder: ToDoFolder = await
+            this.findFolderByName(getTasksDto.folder, getTasksDto.owner);
+        return this.taskRepository.find({
+            folder: folder
+        });
     }
 }
