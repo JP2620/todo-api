@@ -31,4 +31,8 @@ export class UsersService {
         const users: User[] = await this.userRepository.find();
         return users.map((record) => plainToInstance(SerializedUser, record)); 
     }
+
+    findUserByUsername(username: string) {
+        return this.userRepository.findOne({ username });
+    }
 }
