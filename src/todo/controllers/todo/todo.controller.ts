@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Inject, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
 import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
 import { DeleteFolderDto } from 'src/todo/dtos/DeleteFolder.dto';
+import { UpdateTaskDto } from 'src/todo/dtos/UpdateTask.dto';
 import { GetTasksDto } from 'src/todo/dtos/GetTasks.dto';
 import { TodoService } from 'src/todo/services/todo/todo.service';
+import { Task } from 'src/typeorm/Task';
 
 @Controller('todo')
 export class TodoController {
@@ -35,8 +37,14 @@ export class TodoController {
     async getTasks(@Body() getTasksDto: GetTasksDto) {
         console.log(getTasksDto);
         return await this.todoService.getTasks(getTasksDto);
-    } 
+    }
 
+    @Put('task')
+    @UsePipes(ValidationPipe)
+    async updateTask(@Body() updateTaskDto: UpdateTaskDto) {
+        console.log(updateTaskDto);
+        return await this.todoService.updateTask(updateTaskDto);
+    }
 
 
 }
