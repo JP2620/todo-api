@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany} from "typeorm"
+import { Task } from "./Task";
 import { User } from "./User";
 
 @Entity()
@@ -16,4 +17,7 @@ export class ToDoFolder {
         nullable: false
     })
     name: string;
+
+    @OneToMany(() => Task, task => task.folder)
+    tasks: Task[];
 }

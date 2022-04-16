@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Inject, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
+import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
 import { DeleteFolderDto } from 'src/todo/dtos/DeleteFolder.dto';
 import { TodoService } from 'src/todo/services/todo/todo.service';
 
@@ -12,7 +13,7 @@ export class TodoController {
     @UsePipes(ValidationPipe)
     async createFolder(@Body() createFolderDto: CreateFolderDto) {
         console.log(createFolderDto);
-        await this.todoService.createFolder(createFolderDto);
+        return await this.todoService.createFolder(createFolderDto);
     }
 
     @Delete('folder')
@@ -20,5 +21,14 @@ export class TodoController {
     async deleteFolder(@Body() deleteFolderDto: DeleteFolderDto) {
         await this.todoService.deleteFolderByName(deleteFolderDto);
     }
+
+    @Post('task')
+    @UsePipes(ValidationPipe)
+    async createTask(@Body() createTaskDto: CreateTaskDto) {
+        console.log(createTaskDto)
+        return await this.todoService.createTask(createTaskDto);
+    }
+
+
 
 }
