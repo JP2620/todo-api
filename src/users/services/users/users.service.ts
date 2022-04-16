@@ -12,11 +12,13 @@ export class UsersService {
      Repository<UserEntity>) {}
 
     async getUserByUsername(username: string) {
-        return await this.userRepository.findOne({
+        const user: User = await this.userRepository.findOne({
             where: {
                 username: username
             }
-        })
+        });
+        return plainToInstance(SerializedUser, user);
+
     }
 
     async createUser(userDto: CreateUserDto) {
@@ -26,10 +28,7 @@ export class UsersService {
     }
 
     async getUsers() {
-        return await this.userRepository
-        .find()
-        .then(
-            (rows) => rows.map((user) => plainToInstance(SerializedUser, user))
-        );
+        const users: User[] = await this.userRepository.find();
+        return users.map((record) => plainToInstance(SerializedUser, record)); 
     }
 }
