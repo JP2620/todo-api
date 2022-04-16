@@ -4,6 +4,7 @@ import { User } from './typeorm/User';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ToDoFolder } from './typeorm/Folder';
+import { TodoModule } from './todo/todo.module';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forRoot({
@@ -11,7 +12,7 @@ import { ToDoFolder } from './typeorm/Folder';
     database: 'todo_db.db',
     entities: [User, ToDoFolder],
     synchronize: true,
-  }), AuthModule],
+  }), AuthModule, TodoModule],
   controllers: [],
   providers: [],
 })
