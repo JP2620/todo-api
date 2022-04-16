@@ -1,36 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { plainToClass, plainToInstance } from 'class-transformer';
+import { User as UserEntity } from 'src/typeorm/User';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 import { SerializedUser, User } from 'src/users/types';
 
 @Injectable()
 export class UsersService {
-    private users: User[] = [
-    {
-        "id": 1,
-        "name": "John",
-        "surname": "Doe",
-        "username": "johndoe",
-        "password": "password"
-    },
-    {
-        "id": 2,
-        "name": "Jane",
-        "surname": "Doe",
-        "username": "janedoe",
-        "password": "password"
-    }
-    ]
+    constructor(@InjectRepository(UserEntity) private readonly userRepository:
+     Repository<UserEntity>) {}
 
-    getUserByUsername(username: string) {
-        return this.users.find((user) => user.username === username);
+    async getUserByUsername(username: string) {
+        return await this.userRepository.findOne({
+            where: {
+                username: username
+            }
+        })
     }
 
-    createUser(userDto: CreateUserDto) {
-        this.users.push(userDto)
+    async createUser(userDto: CreateUserDto) {
+        // TODO: VALIDATE
+        const newUser = this.userRepository.create(userDto);
+        return await this.userRepository.save(newUser);
     }
 
-    getUsers() {
-        return this.users.map((user) => plainToInstance(SerializedUser, user));
+    async getUsers() {
+        return await this.userRepository
+        .find()
+        .then(
+            (rows) => rows.map((user) => plainToInstance(SerializedUser, user))
+        );
     }
 }

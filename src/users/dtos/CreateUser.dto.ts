@@ -1,9 +1,6 @@
 import { IsNotEmpty, IsNumber, MinLength } from "class-validator";
 
 export class CreateUserDto {
-    @IsNumber()
-    id: number;
-    
     @IsNotEmpty()
     name: string;
 

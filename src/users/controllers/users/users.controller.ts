@@ -9,8 +9,8 @@ export class UsersController {
         UsersService) { };
 
     @Get('/search/:username')
-    getByUsername(@Param('username') username: string) {
-        const user = this.usersService.getUserByUsername(username);
+    async getByUsername(@Param('username') username: string) {
+        const user = await this.usersService.getUserByUsername(username);
         if (user)
             return new SerializedUser(user);
         else
@@ -18,14 +18,13 @@ export class UsersController {
     }
 
     @Get('')
-    getAllUsers() {
-        return this.usersService.getUsers();
+    async getAllUsers() {
+        return await this.usersService.getUsers();
     }
 
     @Post('create')
     @UsePipes(ValidationPipe)
     createUser(@Body() createUserDto: CreateUserDto) {
-        console.log(createUserDto);
         this.usersService.createUser(createUserDto);
     }
 
