@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ToDoFolder } from 'src/typeorm/Folder';
 import { Task } from 'src/typeorm/Task';
@@ -9,7 +10,11 @@ import { TodoService } from './services/todo/todo.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, ToDoFolder, Task])
+    TypeOrmModule.forFeature(
+      [User, ToDoFolder, Task]),
+      PassportModule.register({
+        session: true,
+      })
   ],
   controllers: [TodoController],
   providers: [

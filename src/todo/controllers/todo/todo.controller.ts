@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, Post, Put, Session, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
 import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
 import { DeleteFolderDto } from 'src/todo/dtos/DeleteFolder.dto';
@@ -6,44 +6,66 @@ import { UpdateTaskDto } from 'src/todo/dtos/UpdateTask.dto';
 import { GetTasksDto } from 'src/todo/dtos/GetTasks.dto';
 import { TodoService } from 'src/todo/services/todo/todo.service';
 import { Task } from 'src/typeorm/Task';
+import { AuthenticatedGuard } from 'src/auth/utils/LocalGuard';
 
 @Controller('todo')
 export class TodoController {
     constructor(@Inject('TODO_SERVICE') private readonly todoService:
     TodoService) {}
 
+    @UseGuards(AuthenticatedGuard)
     @Post('folder')
     @UsePipes(ValidationPipe)
-    async createFolder(@Body() createFolderDto: CreateFolderDto) {
+    async createFolder(@Session() session: Record<string, any>, @Body() createFolderDto: CreateFolderDto) {
         console.log(createFolderDto);
-        return await this.todoService.createFolder(createFolderDto);
+        if (session.passport.user.username === DeleteFolderDto)
+            return await this.todoService.createFolder(createFolderDto);
+        else
+            throw new HttpException("Unauthorized access", HttpStatus.UNAUTHORIZED);
     }
 
+    @UseGuards(AuthenticatedGuard)
     @Delete('folder')
     @UsePipes(ValidationPipe)
-    async deleteFolder(@Body() deleteFolderDto: DeleteFolderDto) {
-        await this.todoService.deleteFolderByName(deleteFolderDto);
+    async deleteFolder(@Session() session: Record<string, any>, @Body() deleteFolderDto: DeleteFolderDto) {
+        if (session.passport.user.username === deleteFolderDto)
+            await this.todoService.deleteFolderByName(deleteFolderDto);
+        else
+            throw new HttpException("Unauthorized access", HttpStatus.UNAUTHORIZED);
+
     }
 
+    @UseGuards(AuthenticatedGuard)
     @Post('task')
     @UsePipes(ValidationPipe)
-    async createTask(@Body() createTaskDto: CreateTaskDto) {
+    async createTask(@Session() session: Record<string, any>, @Body() createTaskDto: CreateTaskDto) {
         console.log(createTaskDto)
-        return await this.todoService.createTask(createTaskDto);
+        if (session.passport.user.username === createTaskDto)
+            return await this.todoService.createTask(createTaskDto);
+        else
+            throw new HttpException("Unauthorized access", HttpStatus.UNAUTHORIZED);
     }
 
+    @UseGuards(AuthenticatedGuard)
     @Get('task')
     @UsePipes(ValidationPipe)
-    async getTasks(@Body() getTasksDto: GetTasksDto) {
+    async getTasks(@Session() session: Record<string, any>, @Body() getTasksDto: GetTasksDto)  {
         console.log(getTasksDto);
-        return await this.todoService.getTasks(getTasksDto);
+        if (session.passport.user.username === getTasksDto.owner)
+            return await this.todoService.getTasks(getTasksDto);
+        else
+            throw new HttpException("Unauthorized access", HttpStatus.UNAUTHORIZED);
     }
 
+    @UseGuards(AuthenticatedGuard)
     @Put('task')
     @UsePipes(ValidationPipe)
-    async updateTask(@Body() updateTaskDto: UpdateTaskDto) {
+    async updateTask(@Session() session: Record<string, any>, @Body() updateTaskDto: UpdateTaskDto) {
         console.log(updateTaskDto);
-        return await this.todoService.updateTask(updateTaskDto);
+        if (session.passport.user.username === updateTaskDto.owner)
+            return await this.todoService.updateTask(updateTaskDto);
+        else
+            throw new HttpException("Unauthorized access", HttpStatus.UNAUTHORIZED);
     }
 
 
