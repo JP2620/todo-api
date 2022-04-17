@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, Post, Put, Session, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Inject, Patch, Post, Session, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
 import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
 import { DeleteFolderDto } from 'src/todo/dtos/DeleteFolder.dto';
@@ -58,7 +58,7 @@ export class TodoController {
     }
 
     @UseGuards(AuthenticatedGuard)
-    @Put('task')
+    @Patch('task')
     @UsePipes(ValidationPipe)
     async updateTask(@Session() session: Record<string, any>, @Body() updateTaskDto: UpdateTaskDto) {
         console.log(updateTaskDto);
