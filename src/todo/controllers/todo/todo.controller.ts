@@ -18,7 +18,7 @@ export class TodoController {
     @UsePipes(ValidationPipe)
     async createFolder(@Session() session: Record<string, any>, @Body() createFolderDto: CreateFolderDto) {
         console.log(createFolderDto);
-        if (session.passport.user.username === DeleteFolderDto)
+        if (session.passport.user.username === createFolderDto.owner)
             return await this.todoService.createFolder(createFolderDto);
         else
             throw new HttpException("Unauthorized access", HttpStatus.UNAUTHORIZED);
@@ -28,7 +28,7 @@ export class TodoController {
     @Delete('folder')
     @UsePipes(ValidationPipe)
     async deleteFolder(@Session() session: Record<string, any>, @Body() deleteFolderDto: DeleteFolderDto) {
-        if (session.passport.user.username === deleteFolderDto)
+        if (session.passport.user.username === deleteFolderDto.owner)
             await this.todoService.deleteFolderByName(deleteFolderDto);
         else
             throw new HttpException("Unauthorized access", HttpStatus.UNAUTHORIZED);
@@ -40,7 +40,7 @@ export class TodoController {
     @UsePipes(ValidationPipe)
     async createTask(@Session() session: Record<string, any>, @Body() createTaskDto: CreateTaskDto) {
         console.log(createTaskDto)
-        if (session.passport.user.username === createTaskDto)
+        if (session.passport.user.username === createTaskDto.owner)
             return await this.todoService.createTask(createTaskDto);
         else
             throw new HttpException("Unauthorized access", HttpStatus.UNAUTHORIZED);
