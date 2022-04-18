@@ -4,7 +4,6 @@ import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
 import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
 import { DeleteFolderDto } from 'src/todo/dtos/DeleteFolder.dto';
 import { UpdateTaskDto } from 'src/todo/dtos/UpdateTask.dto';
-import { GetTasksDto } from 'src/todo/dtos/GetTasks.dto';
 import { ToDoFolder } from 'src/typeorm/Folder';
 import { Task } from 'src/typeorm/Task';
 import { User } from 'src/typeorm/User';
@@ -29,11 +28,12 @@ export class TodoService {
     }
 
     async deleteFolderByName(deleteFolderDto: DeleteFolderDto) {
-        const owner: User = await
+        const ownerUser: User = await
             this.userService.findUserByUsername(deleteFolderDto.owner);
+        console.log(deleteFolderDto, ownerUser)
         return this.folderRepository.delete({
             name: deleteFolderDto.name,
-            id: owner.id
+            owner: ownerUser
         })
     }
 
@@ -58,11 +58,19 @@ export class TodoService {
         
     }
 
-    async getTasks(getTasksDto: GetTasksDto) {
+    async getTasks(folder_name:string, owner: string) {
         const folder: ToDoFolder = await
-            this.findFolderByName(getTasksDto.folder, getTasksDto.owner);
+            this.findFolderByName(folder_name, owner);
         return this.taskRepository.find({
             folder: folder
+        });
+    }
+
+    async getFolders(username: string) {
+        const ownerUser: User = await
+            this.userService.findUserByUsername(username);
+        return this.folderRepository.find({
+            owner: ownerUser
         });
     }
 
