@@ -1,0 +1,357 @@
+{
+	"info": {
+		"_postman_id": "2738408f-92df-44ee-8533-1d62baa0324a",
+		"name": "todoapp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Jill\",\n    \"surname\": \"Doe\",\n    \"username\": \"jilldoe\",\n    \"password\": \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/users/create",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"users",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/users/",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user by username",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/users/search/jilldoe",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"users",
+						"search",
+						"jilldoe"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "jpsaucedo",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get session",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/auth/",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"auth",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create folder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"owner\": \"johndoe\",\n    \"name\": \"Work\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/todo/folder",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"todo",
+						"folder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete folder by name",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"owner\": \"jpsaucedo\",\n    \"name\": \"Estudio\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/todo/folder",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"todo",
+						"folder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create task",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"folder\": \"Work\",\n    \"owner\": \"johndoe\",\n    \"description\": \"Scrum meeting\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/todo/task",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"todo",
+						"task"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Tasks by user and folder",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"folder\": \"Estudio\",\n    \"owner\": \"jpsaucedo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/todo/task",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"todo",
+						"task"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar task",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"old_description\": \"Estudiar ED2\",\n    \"new_description\": \"Estudiar NestJS\",\n    \"folder\": \"Estudio\",\n    \"owner\": \"jpsaucedo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/todo/task",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"todo",
+						"task"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get folders by username",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{hostname}}:{{test_port}}/api/todo/folder",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{test_port}}",
+					"path": [
+						"api",
+						"todo",
+						"folder"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "hostname",
+			"value": "localhost",
+			"type": "string"
+		},
+		{
+			"key": "test_port",
+			"value": "5001",
+			"type": "string"
+		}
+	]
+}
