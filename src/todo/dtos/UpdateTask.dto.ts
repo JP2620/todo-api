@@ -11,6 +11,10 @@ export class UpdateTaskDto {
 
     @IsNotEmpty()
     @IsString()
+    state: string;
+
+    @IsNotEmpty()
+    @IsString()
     folder: string;
 
     @IsNotEmpty()

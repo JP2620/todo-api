@@ -15,6 +15,11 @@ export class Task {
     })
     name: string
 
+    @Column({
+        nullable: false
+    })
+    state: string
+
     @ManyToOne(() => ToDoFolder, folder => folder.tasks, {onDelete: "CASCADE"})
     folder: ToDoFolder;
 }

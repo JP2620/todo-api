@@ -52,7 +52,8 @@ export class TodoService {
             this.findFolderByName(createTaskDto.folder, createTaskDto.owner);
         const newTask: Task = this.taskRepository.create({
             folder: folder,
-            name: createTaskDto.description
+            name: createTaskDto.description,
+            state: "Uncompleted"
         });
         return this.taskRepository.save(newTask);
         
@@ -85,9 +86,11 @@ export class TodoService {
     async updateTask(updateTaskDto: UpdateTaskDto) {
         const task: Task = await this.findTask(updateTaskDto.owner,
              updateTaskDto.folder, updateTaskDto.old_description);
+        const state: string = updateTaskDto.state === "Uncompleted"? "Uncompleted": "Completed";
         return this.taskRepository.save({
             ...task,
-            name: updateTaskDto.new_description
+            name: updateTaskDto.new_description,
+            state: state
         });
     }
 }
