@@ -15,7 +15,7 @@ export class TodoService {
     constructor(
         @InjectRepository(ToDoFolder) private readonly folderRepository:
             Repository<ToDoFolder>,
-        @InjectRepository(Task) private readonly taskRepository: 
+        @InjectRepository(Task) private readonly taskRepository:
             Repository<Task>,
         @Inject('USER_SERVICE')
         private readonly userService: UsersService) { }
@@ -56,10 +56,10 @@ export class TodoService {
             state: "Uncompleted"
         });
         return this.taskRepository.save(newTask);
-        
+
     }
 
-    async getTasks(folder_name:string, owner: string) {
+    async getTasks(folder_name: string, owner: string) {
         const folder: ToDoFolder = await
             this.findFolderByName(folder_name, owner);
         return this.taskRepository.find({
@@ -85,11 +85,14 @@ export class TodoService {
 
     async updateTask(updateTaskDto: UpdateTaskDto) {
         const task: Task = await this.findTask(updateTaskDto.owner,
-             updateTaskDto.folder, updateTaskDto.old_description);
-        const state: string = updateTaskDto.state === "Uncompleted"? "Uncompleted": "Completed";
+            updateTaskDto.folder, updateTaskDto.old_description);
+        const state: string = updateTaskDto.state === "Uncompleted" ? 
+            "Uncompleted" : "Completed";
+        const description = updateTaskDto.new_description ? 
+            updateTaskDto.new_description : updateTaskDto.old_description;
         return this.taskRepository.save({
             ...task,
-            name: updateTaskDto.new_description,
+            name: description,
             state: state
         });
     }
