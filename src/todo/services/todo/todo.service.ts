@@ -90,8 +90,9 @@ export class TodoService {
             "Uncompleted" : "Completed";
         const description = updateTaskDto.new_description ? 
             updateTaskDto.new_description : updateTaskDto.old_description;
+        console.log(task);
         return this.taskRepository.save({
-            ...task,
+            id: task.id,
             name: description,
             state: state
         });
