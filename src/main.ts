@@ -17,11 +17,10 @@ async function bootstrap() {
     saveUninitialized: false,
     cookie: {
       maxAge: 600000, //10 mins,
-      httpOnly: true
     }
   }));
   app.use(passport.initialize())
   app.use(passport.session())
-  await app.listen(5001);
+  await app.listen(5001 || process.env.Port);
 }
 bootstrap();
