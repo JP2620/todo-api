@@ -42,8 +42,10 @@ export class TodoService {
             this.userService.findUserByUsername(owner);
         return this.folderRepository.findOne(
             {
-                name: folder_name,
-                owner: ownerUser
+                where: {
+                    name: folder_name,
+                    owner: ownerUser
+                }
             });
     }
 
@@ -63,7 +65,9 @@ export class TodoService {
         const folder: ToDoFolder = await
             this.findFolderByName(folder_name, owner);
         return this.taskRepository.find({
-            folder: folder
+            where: {
+                folder: folder
+            }
         });
     }
 
@@ -71,7 +75,9 @@ export class TodoService {
         const ownerUser: User = await
             this.userService.findUserByUsername(username);
         return this.folderRepository.find({
-            owner: ownerUser
+            where : {
+                owner: ownerUser
+            }
         });
     }
 
@@ -79,16 +85,18 @@ export class TodoService {
         const parent_folder: ToDoFolder = await
             this.findFolderByName(folder, owner);
         return this.taskRepository.findOne({
-            name: description
+            where: {
+                name: description
+            }
         })
     }
 
     async updateTask(updateTaskDto: UpdateTaskDto) {
         const task: Task = await this.findTask(updateTaskDto.owner,
             updateTaskDto.folder, updateTaskDto.old_description);
-        const state: string = updateTaskDto.state === "Uncompleted" ? 
+        const state: string = updateTaskDto.state === "Uncompleted" ?
             "Uncompleted" : "Completed";
-        const description = updateTaskDto.new_description ? 
+        const description = updateTaskDto.new_description ?
             updateTaskDto.new_description : updateTaskDto.old_description;
         console.log(task);
         return this.taskRepository.save({
