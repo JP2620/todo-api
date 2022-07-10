@@ -12,7 +12,7 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
 
   async getUserByUsername(username: string) {
     const user: User = await this.userRepository.findOne({
@@ -37,5 +37,9 @@ export class UsersService {
 
   findUserByUsername(username: string) {
     return this.userRepository.findOne({ username });
+  }
+
+  findById(userId: number) {
+    return this.userRepository.findOne({ where: { id: userId } });
   }
 }

@@ -106,7 +106,6 @@ export class TodoService {
     const description = updateTaskDto.new_description
       ? updateTaskDto.new_description
       : updateTaskDto.old_description;
-    console.log(task);
     return this.taskRepository.save({
       id: task.id,
       name: description,

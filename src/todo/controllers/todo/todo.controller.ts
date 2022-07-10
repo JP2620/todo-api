@@ -16,7 +16,6 @@ import {
 } from '@nestjs/common';
 import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
 import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
-import { DeleteFolderDto } from 'src/todo/dtos/DeleteFolder.dto';
 import { UpdateTaskDto } from 'src/todo/dtos/UpdateTask.dto';
 import { TodoService } from 'src/todo/services/todo/todo.service';
 import { Task } from 'src/typeorm/Task';
@@ -27,7 +26,7 @@ import { ToDoFolder } from 'src/typeorm/Folder';
 export class TodoController {
   constructor(
     @Inject('TODO_SERVICE') private readonly todoService: TodoService,
-  ) {}
+  ) { };
 
   @UseGuards(AuthenticatedGuard)
   @Post('folder')
@@ -36,11 +35,10 @@ export class TodoController {
     @Session() session: Record<string, any>,
     @Body() createFolderDto: CreateFolderDto,
   ) {
-    console.log(createFolderDto);
-    if (session.passport.user.username === createFolderDto.owner)
-      return await this.todoService.createFolder(createFolderDto);
-    else
-      throw new HttpException('Unauthorized access', HttpStatus.UNAUTHORIZED);
+    return await this.todoService.createFolder(
+      createFolderDto,
+      session.passport.user.username,
+    );
   }
 
   @UseGuards(AuthenticatedGuard)
@@ -68,7 +66,7 @@ export class TodoController {
   @Get('folder')
   @UsePipes(ValidationPipe)
   async getFolders(@Session() session: Record<string, any>) {
-    return await this.todoService.getFolders(session.passport.user.username);
+    return await this.todoService.getFolders(session.passport.user.id);
   }
 
   @UseGuards(AuthenticatedGuard)
@@ -78,7 +76,6 @@ export class TodoController {
     @Session() session: Record<string, any>,
     @Body() createTaskDto: CreateTaskDto,
   ) {
-    console.log(createTaskDto);
     if (session.passport.user.username === createTaskDto.owner)
       return await this.todoService.createTask(createTaskDto);
     else
@@ -92,7 +89,6 @@ export class TodoController {
     @Session() session: Record<string, any>,
     @Param('id') folder: string,
   ) {
-    console.log(folder);
     return await this.todoService.getTasks(
       folder,
       session.passport.user.username,
@@ -106,7 +102,6 @@ export class TodoController {
     @Session() session: Record<string, any>,
     @Body() updateTaskDto: UpdateTaskDto,
   ) {
-    console.log(updateTaskDto);
     if (session.passport.user.username === updateTaskDto.owner)
       return await this.todoService.updateTask(updateTaskDto);
     else
