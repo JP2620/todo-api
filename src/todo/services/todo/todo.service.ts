@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
 import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
-import { DeleteFolderDto } from 'src/todo/dtos/DeleteFolder.dto';
 import { UpdateTaskDto } from 'src/todo/dtos/UpdateTask.dto';
 import { ToDoFolder } from 'src/typeorm/Folder';
 import { Task } from 'src/typeorm/Task';
@@ -18,27 +17,15 @@ export class TodoService {
     @InjectRepository(Task) private readonly taskRepository: Repository<Task>,
     @Inject('USER_SERVICE')
     private readonly userService: UsersService,
-  ) {}
+  ) { }
 
-  async createFolder(createFolderDto: CreateFolderDto) {
-    const owner: User = await this.userService.findUserByUsername(
-      createFolderDto.owner,
-    );
-    const newFolder: ToDoFolder = this.folderRepository.create({
-      ...createFolderDto,
-      owner,
-    });
-    return this.folderRepository.save(newFolder);
-  }
-
-  async deleteFolderByName(deleteFolderDto: DeleteFolderDto) {
-    const ownerUser: User = await this.userService.findUserByUsername(
-      deleteFolderDto.owner,
-    );
-    console.log(deleteFolderDto, ownerUser);
-    return this.folderRepository.delete({
-      name: deleteFolderDto.name,
-      owner: ownerUser,
+  async createFolder(createFolderDto: CreateFolderDto, username: string) {
+    this.userService.findUserByUsername(username).then(async (owner) => {
+      const newFolder: ToDoFolder = this.folderRepository.create({
+        name: createFolderDto.name,
+        owner,
+      });
+      return this.folderRepository.save(newFolder);
     });
   }
 
@@ -78,8 +65,8 @@ export class TodoService {
     });
   }
 
-  async getFolders(username: string) {
-    const ownerUser: User = await this.userService.findUserByUsername(username);
+  async getFolders(userId: number) {
+    const ownerUser: User = await this.userService.findById(userId);
     return this.folderRepository.find({
       where: {
         owner: ownerUser,
