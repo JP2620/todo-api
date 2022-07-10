@@ -8,19 +8,20 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableCors({
     credentials: true,
-    origin: "http://localhost:3000"
-  })
+    origin: 'http://localhost:3000',
+  });
   app.use(
     session({
-    secret: 'SECRETSHHHH',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 600000, //10 mins,
-    }
-  }));
-  app.use(passport.initialize())
-  app.use(passport.session())
+      secret: 'SECRETSHHHH',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 600000, //10 mins,
+      },
+    }),
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
   const PORT = process.env.PORT || 5001;
   console.log(`Listening on port ${PORT}`);
   await app.listen(5001 || process.env.Port);

@@ -8,12 +8,17 @@ import { TodoModule } from './todo/todo.module';
 import { Task } from './typeorm/Task';
 
 @Module({
-  imports: [UsersModule, TypeOrmModule.forRoot({
-    type: 'sqlite',
-    database: 'todo_db.db',
-    entities: [User, ToDoFolder, Task],
-    synchronize: true,
-  }), AuthModule, TodoModule],
+  imports: [
+    UsersModule,
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'todo_db.db',
+      entities: [User, ToDoFolder, Task],
+      synchronize: true,
+    }),
+    AuthModule,
+    TodoModule,
+  ],
   controllers: [],
   providers: [],
 })

@@ -19,14 +19,14 @@ import { SessionSerializer } from './utils/SessionSerializer';
   providers: [
     {
       provide: 'AUTH_SERVICE',
-      useClass: AuthService
+      useClass: AuthService,
     },
     {
       provide: 'USER_SERVICE',
-      useClass: UsersService
+      useClass: UsersService,
     },
     LocalStrategy,
-    SessionSerializer
-  ]
+    SessionSerializer,
+  ],
 })
 export class AuthModule {}

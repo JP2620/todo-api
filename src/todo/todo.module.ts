@@ -10,22 +10,21 @@ import { TodoService } from './services/todo/todo.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature(
-      [User, ToDoFolder, Task]),
-      PassportModule.register({
-        session: true,
-      })
+    TypeOrmModule.forFeature([User, ToDoFolder, Task]),
+    PassportModule.register({
+      session: true,
+    }),
   ],
   controllers: [TodoController],
   providers: [
     {
       provide: 'USER_SERVICE',
-      useClass: UsersService
+      useClass: UsersService,
     },
     {
       provide: 'TODO_SERVICE',
-      useClass: TodoService
-    }
-  ]
+      useClass: TodoService,
+    },
+  ],
 })
 export class TodoModule {}

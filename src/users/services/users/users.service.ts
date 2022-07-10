@@ -9,32 +9,33 @@ import { encodePassword } from 'src/utils/bcrypt';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(UserEntity) private readonly userRepository:
-     Repository<UserEntity>) {}
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
-    async getUserByUsername(username: string) {
-        const user: User = await this.userRepository.findOne({
-            where: {
-                username: username
-            }
-        });
-        return plainToInstance(SerializedUser, user);
+  async getUserByUsername(username: string) {
+    const user: User = await this.userRepository.findOne({
+      where: {
+        username: username,
+      },
+    });
+    return plainToInstance(SerializedUser, user);
+  }
 
-    }
+  async createUser(userDto: CreateUserDto) {
+    // TODO: VALIDATE
+    const password = encodePassword(userDto.password);
+    const newUser = this.userRepository.create({ ...userDto, password });
+    return await this.userRepository.save(newUser);
+  }
 
-    async createUser(userDto: CreateUserDto) {
-        // TODO: VALIDATE
-        const password = encodePassword(userDto.password)
-        const newUser = this.userRepository.create({...userDto, password});
-        return await this.userRepository.save(newUser);
-    }
+  async getUsers() {
+    const users: User[] = await this.userRepository.find();
+    return users.map((record) => plainToInstance(SerializedUser, record));
+  }
 
-    async getUsers() {
-        const users: User[] = await this.userRepository.find();
-        return users.map((record) => plainToInstance(SerializedUser, record)); 
-    }
-
-    findUserByUsername(username: string) {
-        return this.userRepository.findOne({ username });
-    }
+  findUserByUsername(username: string) {
+    return this.userRepository.findOne({ username });
+  }
 }
