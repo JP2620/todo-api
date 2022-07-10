@@ -13,13 +13,11 @@ import { AuthenticatedGuard, LocalAuthGuard } from 'src/auth/utils/LocalGuard';
 export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {}
+  async login(@Request() req) { }
 
   @UseGuards(AuthenticatedGuard)
   @Get('')
   async getAuthSession(@Session() session: Record<string, any>) {
-    console.log(session);
-    console.log(session.id);
     session.authenticated = true;
     return session;
   }

@@ -1,4 +1,3 @@
-import { TodoController } from 'src/todo/controllers/todo/todo.controller';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { ToDoFolder } from './Folder';
 

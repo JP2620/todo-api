@@ -18,7 +18,6 @@ import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
 import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
 import { UpdateTaskDto } from 'src/todo/dtos/UpdateTask.dto';
 import { TodoService } from 'src/todo/services/todo/todo.service';
-import { Task } from 'src/typeorm/Task';
 import { AuthenticatedGuard } from 'src/auth/utils/LocalGuard';
 import { ToDoFolder } from 'src/typeorm/Folder';
 
@@ -26,7 +25,7 @@ import { ToDoFolder } from 'src/typeorm/Folder';
 export class TodoController {
   constructor(
     @Inject('TODO_SERVICE') private readonly todoService: TodoService,
-  ) { };
+  ) {}
 
   @UseGuards(AuthenticatedGuard)
   @Post('folder')
@@ -49,7 +48,7 @@ export class TodoController {
     @Param('id') folderId: number,
   ) {
     this.todoService
-      .getFolderById(folderId)
+      .findFolderById(folderId)
       .then(async (folder: ToDoFolder) => {
         if (session.passport.user.id === folder.owner.id) {
           return await this.todoService.deleteFolderById(folder.id);
@@ -76,22 +75,22 @@ export class TodoController {
     @Session() session: Record<string, any>,
     @Body() createTaskDto: CreateTaskDto,
   ) {
-    if (session.passport.user.username === createTaskDto.owner)
-      return await this.todoService.createTask(createTaskDto);
-    else
-      throw new HttpException('Unauthorized access', HttpStatus.UNAUTHORIZED);
+    return await this.todoService.createTask(
+      createTaskDto,
+      session.passport.user.id,
+    );
   }
 
   @UseGuards(AuthenticatedGuard)
-  @Get('folder/:id')
+  @Get('folder/:folderName')
   @UsePipes(ValidationPipe)
   async getTasks(
     @Session() session: Record<string, any>,
-    @Param('id') folder: string,
+    @Param('folderName') folderName: string,
   ) {
     return await this.todoService.getTasks(
-      folder,
-      session.passport.user.username,
+      folderName,
+      session.passport.user.id,
     );
   }
 
@@ -102,9 +101,10 @@ export class TodoController {
     @Session() session: Record<string, any>,
     @Body() updateTaskDto: UpdateTaskDto,
   ) {
-    if (session.passport.user.username === updateTaskDto.owner)
-      return await this.todoService.updateTask(updateTaskDto);
-    else
-      throw new HttpException('Unauthorized access', HttpStatus.UNAUTHORIZED);
+    console.log(updateTaskDto);
+    return await this.todoService.updateTask(
+      updateTaskDto,
+      session.passport.user.id,
+    );
   }
 }

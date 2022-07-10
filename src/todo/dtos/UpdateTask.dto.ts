@@ -1,30 +1,15 @@
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateTaskDto {
+  @IsNumber()
   @IsNotEmpty()
-  @IsString()
-  old_description: string;
+  id: number;
 
   @IsString()
   @IsOptional()
-  new_description: string;
+  name: string;
 
   @IsNotEmpty()
   @IsString()
   state: string;
-
-  @IsNotEmpty()
-  @IsString()
-  folder: string;
-
-  @IsNotEmpty()
-  @IsString()
-  owner: string;
 }

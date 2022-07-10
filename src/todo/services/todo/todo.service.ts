@@ -98,34 +98,25 @@ export class TodoService {
     });
   }
 
-  async findTask(ownerId: number, folder: string, description: string) {
-    const parentFolder: ToDoFolder = await this.findFolderByNameAndOwner(
-      folder,
-      ownerId,
-    );
+  async findTaskById(id: number) {
     return this.taskRepository.findOne({
       where: {
-        name: description,
-        folder: parentFolder,
+        id: id,
       },
+      relations: ['folder', 'folder.owner'],
     });
   }
 
-  async updateTask(updateTaskDto: UpdateTaskDto) {
-    const task: Task = await this.findTask(
-      updateTaskDto.ownerId,
-      updateTaskDto.folder,
-      updateTaskDto.old_description,
-    );
-    const state: string =
-      updateTaskDto.state === 'Uncompleted' ? 'Uncompleted' : 'Completed';
-    const description = updateTaskDto.new_description
-      ? updateTaskDto.new_description
-      : updateTaskDto.old_description;
-    return this.taskRepository.save({
-      id: task.id,
-      name: description,
-      state: state,
-    });
+  async updateTask(updateTaskDto: UpdateTaskDto, ownerId: number) {
+    const task: Task = await this.findTaskById(updateTaskDto.id);
+    console.log(task);
+    if (task.folder.owner.id === ownerId) {
+      task.state =
+        updateTaskDto.state === 'Uncompleted' ? 'Uncompleted' : 'Completed';
+      task.name = updateTaskDto.name ? updateTaskDto.name : task.name;
+      return this.taskRepository.save(task);
+    } else {
+      throw new HttpException('Unauthorized Access', HttpStatus.UNAUTHORIZED);
+    }
   }
 }
