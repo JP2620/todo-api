@@ -1,4 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateFolderDto } from 'src/todo/dtos/CreateFolder.dto';
 import { CreateTaskDto } from 'src/todo/dtos/CreateTask.dto';
@@ -17,7 +23,7 @@ export class TodoService {
     @InjectRepository(Task) private readonly taskRepository: Repository<Task>,
     @Inject('USER_SERVICE')
     private readonly userService: UsersService,
-  ) { }
+  ) {}
 
   async createFolder(createFolderDto: CreateFolderDto, username: string) {
     this.userService.findUserByUsername(username).then(async (owner) => {
@@ -33,35 +39,44 @@ export class TodoService {
     return this.folderRepository.delete({ id: folderId });
   }
 
-  async findFolderByName(folder_name: string, owner: string) {
-    const ownerUser: User = await this.userService.findUserByUsername(owner);
+  async findFolderByNameAndOwner(folder_name: string, ownerId: number) {
+    const ownerUser: User = await this.userService.findById(ownerId);
     return this.folderRepository.findOne({
       where: {
         name: folder_name,
         owner: ownerUser,
       },
+      relations: ['owner'],
     });
   }
 
-  async createTask(createTaskDto: CreateTaskDto) {
-    const folder: ToDoFolder = await this.findFolderByName(
-      createTaskDto.folder,
-      createTaskDto.owner,
+  async createTask(createTaskDto: CreateTaskDto, userId: number) {
+    const folder: ToDoFolder = await this.findFolderByNameAndOwner(
+      createTaskDto.folderName,
+      userId,
     );
-    const newTask: Task = this.taskRepository.create({
-      folder: folder,
-      name: createTaskDto.description,
-      state: 'Uncompleted',
-    });
-    return this.taskRepository.save(newTask);
+    if (userId === folder.owner.id) {
+      const newTask: Task = this.taskRepository.create({
+        folder: folder,
+        name: createTaskDto.name,
+        state: 'Uncompleted',
+      });
+      return this.taskRepository.save(newTask);
+    } else {
+      throw new HttpException('Unauthorized access', HttpStatus.UNAUTHORIZED);
+    }
   }
 
-  async getTasks(folder_name: string, owner: string) {
-    const folder: ToDoFolder = await this.findFolderByName(folder_name, owner);
+  async getTasks(folderName: string, ownerId: number) {
+    const folder: ToDoFolder = await this.findFolderByNameAndOwner(
+      folderName,
+      ownerId,
+    );
     return this.taskRepository.find({
       where: {
         folder: folder,
       },
+      relations: ['folder'],
     });
   }
 
@@ -74,30 +89,31 @@ export class TodoService {
     });
   }
 
-  async getFolderById(folderId: number) {
+  async findFolderById(folderId: number) {
     return this.folderRepository.findOne({
       where: {
         id: folderId,
       },
-      relations: ['owner', 'tasks'],
+      relations: ['owner'],
     });
   }
 
-  async findTask(owner: string, folder: string, description: string) {
-    const parent_folder: ToDoFolder = await this.findFolderByName(
+  async findTask(ownerId: number, folder: string, description: string) {
+    const parentFolder: ToDoFolder = await this.findFolderByNameAndOwner(
       folder,
-      owner,
+      ownerId,
     );
     return this.taskRepository.findOne({
       where: {
         name: description,
+        folder: parentFolder,
       },
     });
   }
 
   async updateTask(updateTaskDto: UpdateTaskDto) {
     const task: Task = await this.findTask(
-      updateTaskDto.owner,
+      updateTaskDto.ownerId,
       updateTaskDto.folder,
       updateTaskDto.old_description,
     );
